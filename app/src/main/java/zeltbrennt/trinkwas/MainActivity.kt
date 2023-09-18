@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -25,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import zeltbrennt.trinkwas.ui.TrinkViewModel
+import zeltbrennt.trinkwas.model.TrinkViewModel
 import zeltbrennt.trinkwas.ui.theme.TrinkWasTheme
 
 class MainActivity : ComponentActivity() {
@@ -58,6 +59,7 @@ TODO:
     - add menue
  */
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatusScreen(
     modifier: Modifier = Modifier,
@@ -83,7 +85,13 @@ fun StatusScreen(
             modifier = modifier.fillMaxWidth(),
             progress = (trinkUIState.currentPercent / 100F).coerceAtMost(1F)
         )
-        Text(text = stringResource(R.string.fill_amount, trinkUIState.amount, trinkUIState.target))
+        Text(
+            text = stringResource(
+                R.string.fill_amount,
+                trinkUIState.amount,
+                trinkUIState.target
+            )
+        )
         Button(onClick = { trinkViewModel.updateUI() }) {
             Text(stringResource(R.string.step, trinkUIState.stepSize.toInt()))
         }
@@ -97,4 +105,5 @@ fun StatusScreen(
             Text(text = stringResource(R.string.reset))
         }
     }
+
 }

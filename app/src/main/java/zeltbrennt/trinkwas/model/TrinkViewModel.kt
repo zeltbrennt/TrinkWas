@@ -1,4 +1,4 @@
-package zeltbrennt.trinkwas.ui
+package zeltbrennt.trinkwas.model
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

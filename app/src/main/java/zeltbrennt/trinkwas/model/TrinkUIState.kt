@@ -1,4 +1,4 @@
-package zeltbrennt.trinkwas.ui
+package zeltbrennt.trinkwas.model
 
 data class TrinkUIState(
     val target: Int = 3000,
