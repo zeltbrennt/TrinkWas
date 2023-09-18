@@ -15,15 +15,17 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import zeltbrennt.trinkwas.ui.TrinkViewModel
 import zeltbrennt.trinkwas.ui.theme.TrinkWasTheme
 
 class MainActivity : ComponentActivity() {
@@ -45,8 +47,9 @@ class MainActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun StatusScreenPreview() {
-    StatusScreen()
+fun StatusScreenPreview(
+    trinkViewModel: ViewModel = viewModel()
+) {
 }
 /*
 TODO:
@@ -56,12 +59,14 @@ TODO:
  */
 
 @Composable
-fun StatusScreen(modifier: Modifier = Modifier) {
+fun StatusScreen(
+    modifier: Modifier = Modifier,
+    trinkViewModel: TrinkViewModel = viewModel(),
+) {
+    val trinkUIState by trinkViewModel.uiState.collectAsState()
     val minimum = 100F
     val maximum = 500F
-    val target = 3000F
-    var current by remember { mutableStateOf(0F) }
-    var step by remember { mutableStateOf(200F) }
+
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -71,25 +76,25 @@ fun StatusScreen(modifier: Modifier = Modifier) {
     )
     {
         Text(
-            text = "${(current / target * 100).toInt()}%",
+            text = stringResource(R.string.fill_percentage, trinkUIState.currentPercent),
             fontSize = 80.sp
         )
         LinearProgressIndicator(
             modifier = modifier.fillMaxWidth(),
-            progress = (current / target).coerceAtMost(1F)
+            progress = (trinkUIState.currentPercent / 100F).coerceAtMost(1F)
         )
-        Text(text = "${current.toInt()} / ${target.toInt()} ml")
-        Button(onClick = { current += step }) {
-            Text("${step.toInt()}ml")
+        Text(text = stringResource(R.string.fill_amount, trinkUIState.amount, trinkUIState.target))
+        Button(onClick = { trinkViewModel.updateUI() }) {
+            Text(stringResource(R.string.step, trinkUIState.stepSize.toInt()))
         }
         Slider(
             modifier = modifier.fillMaxWidth(),
             valueRange = (minimum..maximum),
             steps = (maximum.toInt() - minimum.toInt() - 50) / 50,
-            value = step,
-            onValueChange = { step = it })
-        Button(onClick = { current = 0F }) {
-            Text(text = "reset")
+            value = trinkUIState.stepSize,
+            onValueChange = { trinkViewModel.changeStepSize(it) })
+        Button(onClick = { trinkViewModel.reset() }) {
+            Text(text = stringResource(R.string.reset))
         }
     }
 }
