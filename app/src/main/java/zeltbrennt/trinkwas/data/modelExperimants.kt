@@ -1,4 +1,4 @@
-package zeltbrennt.trinkwas.model
+package zeltbrennt.trinkwas.data
 
 
 import kotlin.math.ceil

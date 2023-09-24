@@ -1,4 +1,4 @@
-package zeltbrennt.trinkwas.model
+package zeltbrennt.trinkwas.data
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
